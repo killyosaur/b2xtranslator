@@ -42,7 +42,7 @@ namespace DIaLOGIKa.b2xtranslator.StructuredStorage.Reader
         Fat _fat;
         Header _header;
         InputHandler _fileHandler;
-        List<UInt32> _sectorsUsedByDirectory;      
+        List<UInt32> _sectorsUsedByDirectory;
 
         List<DirectoryEntry> _directoryEntries = new List<DirectoryEntry>();
 
@@ -86,14 +86,14 @@ namespace DIaLOGIKa.b2xtranslator.StructuredStorage.Reader
         /// <param name="sid">start sid</param>
         private void GetAllDirectoryEntriesRecursive(UInt32 sid, string path)
         {
-            DirectoryEntry entry = ReadDirectoryEntry(sid, path);            
+            DirectoryEntry entry = ReadDirectoryEntry(sid, path);
             UInt32 left = entry.LeftSiblingSid;
             UInt32 right = entry.RightSiblingSid;
             UInt32 child = entry.ChildSiblingSid;
             //Console.WriteLine("{0:X02}: Left: {2:X02}, Right: {3:X02}, Child: {4:X02}, Name: {1}, Color: {5}", entry.Sid, entry.Name, (left > 0xFF)? 0xFF : left, (right > 0xFF)? 0xFF : right, (child > 0xFF)? 0xFF : child, entry.Color.ToString() );
 
             // Check for cycle
-            if (_directoryEntries.Exists(delegate(DirectoryEntry x) { return x.Sid == entry.Sid; }))
+            if (_directoryEntries.Exists(delegate (DirectoryEntry x) { return x.Sid == entry.Sid; }))
             {
                 throw new ChainCycleDetectedException("DirectoryEntries");
             }
@@ -114,7 +114,7 @@ namespace DIaLOGIKa.b2xtranslator.StructuredStorage.Reader
             // Child
             if (child != SectorId.NOSTREAM)
             {
-                GetAllDirectoryEntriesRecursive(child ,path + ((sid == 0) ? "" : entry.Name) + "\\");
+                GetAllDirectoryEntriesRecursive(child, path + ((sid == 0) ? "" : entry.Name) + "\\");
             }
         }
 
@@ -125,7 +125,7 @@ namespace DIaLOGIKa.b2xtranslator.StructuredStorage.Reader
         private DirectoryEntry ReadDirectoryEntry(UInt32 sid, string path)
         {
             SeekToDirectoryEntry(sid);
-            DirectoryEntry result = new DirectoryEntry(_header, _fileHandler, sid, path);            
+            DirectoryEntry result = new DirectoryEntry(_header, _fileHandler, sid, path);
             return result;
         }
 
@@ -140,7 +140,7 @@ namespace DIaLOGIKa.b2xtranslator.StructuredStorage.Reader
             {
                 throw new ArgumentOutOfRangeException();
             }
-            _fileHandler.SeekToPositionInSector(_sectorsUsedByDirectory[sectorInDirectoryChain], (sid * Measures.DirectoryEntrySize) % _header.SectorSize);            
+            _fileHandler.SeekToPositionInSector(_sectorsUsedByDirectory[sectorInDirectoryChain], (sid * Measures.DirectoryEntrySize) % _header.SectorSize);
         }
 
 
@@ -156,10 +156,10 @@ namespace DIaLOGIKa.b2xtranslator.StructuredStorage.Reader
 
             if (path[0] == '\\')
             {
-                return _directoryEntries.Find(delegate(DirectoryEntry entry) { return entry.Path == path; });
+                return _directoryEntries.Find(delegate (DirectoryEntry entry) { return entry.Path == path; });
             }
 
-            return _directoryEntries.Find(delegate(DirectoryEntry entry) { return entry.Name == path; });
+            return _directoryEntries.Find(delegate (DirectoryEntry entry) { return entry.Name == path; });
         }
 
 
@@ -168,7 +168,7 @@ namespace DIaLOGIKa.b2xtranslator.StructuredStorage.Reader
         /// </summary>
         internal DirectoryEntry GetDirectoryEntry(UInt32 sid)
         {
-            return _directoryEntries.Find(delegate(DirectoryEntry entry) { return entry.Sid == sid; });
+            return _directoryEntries.Find(delegate (DirectoryEntry entry) { return entry.Sid == sid; });
         }
 
 
@@ -210,7 +210,7 @@ namespace DIaLOGIKa.b2xtranslator.StructuredStorage.Reader
 
             foreach (DirectoryEntry entry in _directoryEntries)
             {
-                result.Add(entry.Name);                
+                result.Add(entry.Name);
             }
             return new ReadOnlyCollection<string>(result);
         }
@@ -218,7 +218,7 @@ namespace DIaLOGIKa.b2xtranslator.StructuredStorage.Reader
 
         /// <summary>
         /// Returns all entry paths contained in a compound file
-        /// </summary>        
+        /// </summary>
         internal ReadOnlyCollection<string> GetPathsOfAllEntries()
         {
             List<string> result = new List<string>();
@@ -282,7 +282,7 @@ namespace DIaLOGIKa.b2xtranslator.StructuredStorage.Reader
         internal ReadOnlyCollection<DirectoryEntry> GetAllStreamEntries()
         {
             return new ReadOnlyCollection<DirectoryEntry>(_directoryEntries.FindAll(
-                delegate(DirectoryEntry entry) { return entry.Type == DirectoryEntryType.STGTY_STREAM; }
+                delegate (DirectoryEntry entry) { return entry.Type == DirectoryEntryType.STGTY_STREAM; }
                 ));
         }
     }

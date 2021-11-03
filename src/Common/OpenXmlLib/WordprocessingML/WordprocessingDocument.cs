@@ -69,7 +69,7 @@ namespace DIaLOGIKa.b2xtranslator.OpenXmlLib.WordprocessingML
             return doc;
         }
 
-        public OpenXmlPackage.DocumentType DocumentType
+        new public OpenXmlPackage.DocumentType DocumentType
         {
             get { return _documentType; }
             set { _documentType = value; }
